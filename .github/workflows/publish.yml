@@ -1,8 +1,8 @@
 name: Publish package
 on:
   push:
-    branches: [ 'main' ]
-    tags: [ 'v*' ]
+    branches: ['main']
+    tags: ['v*']
 
 # Build and publish package to the Github Packages service
 # Packages from tagged commits will get the version of the git tag, and the npm tag "latest"
@@ -15,35 +15,36 @@ jobs:
       contents: read
       packages: write
     steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - uses: actions/setup-node@v4
-      with:
-        node-version: 18
-        registry-url: 'https://npm.pkg.github.com'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          registry-url: 'https://npm.pkg.github.com'
 
-    - uses: pnpm/action-setup@v2
-      with:
-        run_install: true
+      - uses: pnpm/action-setup@v2
+        with:
+          run_install: true
 
-    # packages created from a tag get the "latest" tag
-    - name: make an explicitly tagged release version
-      if: ${{ github.ref_type == 'tag' }}
-      run: |
-        pnpm version --no-git-tag-version from-git
-        echo "NPM_PUBLISH_TAG=latest" >> $GITHUB_ENV
+      # packages created from a tag get the "latest" tag
+      - name: make an explicitly tagged release version
+        if: ${{ github.ref_type == 'tag' }}
+        run: |
+          pnpm version --no-git-tag-version from-git
+          echo "NPM_PUBLISH_TAG=latest" >> $GITHUB_ENV
 
-    # packages created from the main branch get a "dev" tag
-    - name: rolling versioned dev package from main
-      if: ${{ github.ref_type == 'branch' &&  github.ref_name == 'main' }}
-      run: |
-        pnpm version --no-git-tag-version `git describe --tags --long | sed s/^v//`
-        echo "NPM_PUBLISH_TAG=dev" >> $GITHUB_ENV
+      # packages created from the main branch get a "dev" tag
+      - name: rolling versioned dev package from main
+        if: ${{ github.ref_type == 'branch' &&  github.ref_name == 'main' }}
+        run: |
+          pnpm version --no-git-tag-version `git describe --tags --long | sed s/^v//`
+          echo "NPM_PUBLISH_TAG=dev" >> $GITHUB_ENV
 
-    - run: pnpm dist
+      - run: pnpm dist
 
-    - run: pnpm publish --no-git-checks --tag "${{ env.NPM_PUBLISH_TAG }}"
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # package.json has been changed so don't do git checks. tag will be either "dev" or "latest"
+      - run: pnpm publish --no-git-checks --tag "${{ env.NPM_PUBLISH_TAG }}"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

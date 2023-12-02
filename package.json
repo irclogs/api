@@ -12,6 +12,7 @@
   ],
   "scripts": {
     "dist": "tsc",
+    "compile": "tsc --noEmit --pretty",
     "prettier": "prettier src/",
     "prettier:fix": "prettier src/ --write",
     "test": "echo Warning: no test specified for now!"
