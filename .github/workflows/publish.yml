@@ -4,6 +4,10 @@ on:
     branches: [ 'main' ]
     tags: [ 'v*' ]
 
+# Build and publish package to the Github Packages service
+# Packages from tagged commits will get the version of the git tag, and the npm tag "latest"
+# Packages build from main, will get an auto-incremented version, and the npm tag "dev"
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -24,20 +28,22 @@ jobs:
       with:
         run_install: true
 
+    # packages created from a tag get the "latest" tag
     - name: make an explicitly tagged release version
       if: ${{ github.ref_type == 'tag' }}
       run: |
-        npm version --no-git-tag-version from-git
+        pnpm version --no-git-tag-version from-git
         echo "NPM_PUBLISH_TAG=latest" >> $GITHUB_ENV
 
+    # packages created from the main branch get a "dev" tag
     - name: rolling versioned dev package from main
       if: ${{ github.ref_type == 'branch' &&  github.ref_name == 'main' }}
       run: |
-        npm version --no-git-tag-version `git describe --tags --long | sed s/^v//`
+        pnpm version --no-git-tag-version `git describe --tags --long | sed s/^v//`
         echo "NPM_PUBLISH_TAG=dev" >> $GITHUB_ENV
 
     - run: pnpm dist
 
-    - run: pnpm publish --tag "${{ env.NPM_PUBLISH_TAG }}"
+    - run: pnpm publish --no-git-checks --tag "${{ env.NPM_PUBLISH_TAG }}"
       env:
         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
