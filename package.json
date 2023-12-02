@@ -11,14 +11,16 @@
     "/dist"
   ],
   "scripts": {
-    "dist": "tsc",
+    "dist": "rm -rf dist/ && tsc",
     "compile": "tsc --noEmit --pretty",
     "prettier": "prettier src/",
     "prettier:fix": "prettier src/ --write",
+    "play": "pnpm dist && serve -c playground/serve.json",
     "test": "echo Warning: no test specified for now!"
   },
   "devDependencies": {
     "prettier": "^3.1.0",
+    "serve": "^14.2.1",
     "typescript": "^5.3.2"
   },
   "prettier": {

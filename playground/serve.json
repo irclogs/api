@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    { "source": "", "destination": "playground/index.html" },
+    { "source": "index.html", "destination": "playground/index.html" },
+    { "source": "index.js", "destination": "playground/index.js" },
+    { "source": "dist/**", "destination": "dist/*" }
+  ],
+  "cleanUrls": false
+}
