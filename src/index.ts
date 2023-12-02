@@ -1,1 +1,1 @@
-export { sayHello, sayGoodbye } from './hello-world';
+export { CouchDB } from './couch-api';
