@@ -1,0 +1,24 @@
+name: "[CI] Build & Test"
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 18
+
+    - uses: pnpm/action-setup@v2
+      with:
+        run_install: true
+
+    - run: pnpm prettier
+    - run: pnpm tsc
+    - run: pnpm test
