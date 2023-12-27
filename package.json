@@ -15,7 +15,8 @@
     "compile": "tsc --noEmit --pretty",
     "prettier": "prettier src/",
     "prettier:fix": "prettier src/ --write",
-    "play": "pnpm dist && serve -c playground/serve.json",
+    "play:watch": "tsc --outFile playground/dist/index.js --module amd --watch",
+    "play:serve": "serve playground/",
     "test": "echo Warning: no test specified for now!"
   },
   "devDependencies": {

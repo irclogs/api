@@ -19,7 +19,7 @@ pnpm add @irclogs/api
 TBD
 ```
 pnpm install
-pnpm play
+pnpm run "/^play:.*/"
 ```
 
 ## References
