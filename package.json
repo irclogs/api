@@ -15,14 +15,14 @@
     "compile": "tsc --noEmit --pretty",
     "prettier": "prettier src/",
     "prettier:fix": "prettier src/ --write",
-    "play:watch": "tsc --outFile playground/dist/index.js --module amd --watch",
-    "play:serve": "serve playground/",
+    "play": "esbuild src/index.ts --bundle --outdir=playground/dist --watch --servedir=playground",
     "test": "echo Warning: no test specified for now!"
   },
   "devDependencies": {
-    "prettier": "^3.1.0",
+    "esbuild": "^0.19.10",
+    "prettier": "^3.1.1",
     "serve": "^14.2.1",
-    "typescript": "^5.3.2"
+    "typescript": "^5.3.3"
   },
   "prettier": {
     "printWidth": 120,
