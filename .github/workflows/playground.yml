@@ -33,8 +33,7 @@ jobs:
         with:
           run_install: true
 
-      - run: pnpm esbuild src/index.ts --bundle --outdir=playground/dist
-      - run: pnpm tsc --emitDeclarationOnly src/index.ts --declaration --target esnext --declarationDir playground/types
+      - run: pnpm run '/^playground:.*/'
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1

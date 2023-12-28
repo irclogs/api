@@ -16,6 +16,8 @@
     "prettier": "prettier src/",
     "prettier:fix": "prettier src/ --write",
     "play": "esbuild src/index.ts --bundle --outdir=playground/dist --watch --servedir=playground",
+    "playground:dist": "esbuild src/index.ts --bundle --outdir=playground/dist",
+    "playground:types": "tsc --emitDeclarationOnly src/index.ts --declaration --target esnext --declarationDir playground/types",
     "test": "echo Warning: no test specified for now!"
   },
   "devDependencies": {
