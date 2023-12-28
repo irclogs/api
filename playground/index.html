@@ -1,9 +1,41 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Playground</title>
+    <!--script src="https://unpkg.com/typescript@5.3.3"></script-->
+    <script src="https://www.typescriptlang.org/js/vs.loader.js"></script>
+    <script src="./index.js" defer></script>
+    <style>
+      body {
+        overflow: hidden;
+        margin: 0;
+        height: 100vh;
+      }
+      #monaco-editor {
+        height: 50vh;
+        background-color: rgb(255, 221, 227);
+      }
+      #lower-pane {
+        background-color: #e3f1ff;
+        border: 1px solid #ccc;
+        border-bottom: 0;
+        padding: 10px;
+        margin: 0;
+        height: 50vh;
+        & > pre {
+           overflow: scroll;
+           height: 85%;
+        }
+      }
+    </style>
   </head>
-  <div id="loader">Loading...</div>
-  <div id="monaco-editor-embed" style="height: 800px;"></div>
-  <script src="./index.js"></script>
+  <body>
+    <div id="monaco-editor"></div>
+    <div id="lower-pane">
+      <button id="run-code">Run Code</button>
+      <pre id="console-output"></pre>
+    </div>
+  </body>
 </html>

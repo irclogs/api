@@ -1,57 +1,105 @@
-// First set up the VSCode loader in a script tag
-const getLoaderScript = document.createElement('script')
-getLoaderScript.src = 'https://www.typescriptlang.org/js/vs.loader.js'
-getLoaderScript.async = true
-getLoaderScript.onload = () => {
-  // Now the loader is ready, tell require where it can get the version of monaco, and the sandbox
-  // This version uses the latest version of the sandbox, which is used on the TypeScript website
+/**
+ * Runs after monaco-editor library is loaded.
+ * Prepare model.
+ * Create editor.
+ * Configure the typescript language server.
+ */
+async function init() {
+  const example = await fetch('./example.ts');
+  const exampleContent = await example.text();
+  const uri = monaco.Uri.parse('http://localhost:3000/example.ts');
+  const model = monaco.editor.createModel(exampleContent, 'typescript', uri);
 
-  // For the monaco version you can use unpkg or the TypeSCript web infra CDN
-  // You can see the available releases for TypeScript here:
-  // https://typescript.azureedge.net/indexes/releases.json
-  //
-  require.config({
-    paths: {
-      vs: 'https://typescript.azureedge.net/cdn/4.0.5/monaco/min/vs',
-      // vs: 'https://unpkg.com/@typescript-deploys/monaco-editor@4.0.5/min/vs',
-      sandbox: 'https://www.typescriptlang.org/js/sandbox',
-    },
-    // This is something you need for monaco to work
-    ignoreDuplicateModules: ['vs/editor/editor.main'],
-  })
+  const editor = monaco.editor.create(document.getElementById('monaco-editor'), {
+    model: model,
+    theme: 'vs-light',
+    automaticLayout: true,
+  });
+  editor.focus();
 
-  // Grab a copy of monaco, TypeScript and the sandbox
-  require(['vs/editor/editor.main', 'vs/language/typescript/tsWorker', 'sandbox/index'], (
-    main,
-    _tsWorker,
-    sandboxFactory
-  ) => {
-    const initialCode = `import {CouchdDB} from "???";
+  monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+    target: monaco.languages.typescript.ScriptTarget.ESNext,
+    module: monaco.languages.typescript.ModuleKind.ESNext,
+    allowNonTsExtensions: true,
+  });
 
-const db = new CouchdDB("https://db.softver.org.mk/irclog/");
-let res = db.fetchChannelList();
-console.log(res);
-`
-    const isOK = main && window.ts && sandboxFactory
-    if (isOK) {
-      document.getElementById('loader').parentNode.removeChild(document.getElementById('loader'))
-    } else {
-      console.error('Could not get all the dependencies of sandbox set up!')
-      console.error('main', !!main, 'ts', !!window.ts, 'sandbox', !!sandbox)
-      return
-    }
-
-    // Create a sandbox and embed it into the div #monaco-editor-embed
-    const sandboxConfig = {
-      text: initialCode,
-      compilerOptions: {},
-      domID: 'monaco-editor-embed',
-    }
-
-    const sandbox = sandboxFactory.createTypeScriptSandbox(sandboxConfig, main, window.ts)
-    sandbox.editor.focus()
-    window.sandbox = sandbox;
-  })
+  document.getElementById('run-code').addEventListener('click', () => runCode(editor));
 }
 
-document.body.appendChild(getLoaderScript)
+/**
+ * Run button handler
+ *
+ * @param {MonacoEditor} editor
+ */
+function runCode(editor) {
+  const code = editor.getValue();
+  const outputElement = document.querySelector('#console-output');
+
+  try {
+    const result = ts.transpileModule(code, {
+      compilerOptions: { target: 'es2022', module: 'es2022', },
+      reportDiagnostics: true,
+    });
+    const transpiledCode = result.outputText
+         .replace(/^[:space:]*import.*from.*irclog-api.*/, `import {CouchDB} from "./dist/index.js"`)
+
+    createModule(transpiledCode, '#console-output');
+
+    outputElement.innerText = 'Code executed successfully';
+  } catch (error) {
+    outputElement.innerText += `Error: ${error.message}\n`;
+  }
+  outputElement.scrollTo({top: outputElement.scrollHeight});
+}
+
+/**
+ * Poor mans sandbox/eval implementation.
+ *
+ * Create a <script> element, type: module, and insert it into the dom, so it runs.
+ *
+ * Redirects console.log output to the html element given with consoleSelector query selector.
+ *
+ * @param {string} code
+ * @param {string} consoleSelector
+ */
+function createModule(code, consoleSelector) {
+  const oldModule = document.getElementById('run-module');
+  const newModule = document.createElement('script');
+  newModule.id = 'run-module';
+  newModule.type = 'module';
+  // redirect console.log to the html element
+  newModule.textContent = `
+    const console = { log: (msg) => {
+      const el = document.querySelector('${consoleSelector}');
+      el.innerText += msg + '\n';
+      el.scrollTo({top: el.scrollHeight});
+    }}
+  `;
+  newModule.textContent += code;
+  if (oldModule) {
+    document.body.replaceChild(newModule, oldModule);
+  } else {
+    document.body.appendChild(newModule);
+  }
+}
+
+// Load the Monaco Editor
+require.config({
+   paths: {
+      vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs',
+      // 'irclog-api': './dist/index.js',
+   }
+});
+
+require(['vs/editor/editor.main'], function () {
+  init();
+});
+
+/**
+ * Live-reload assuming `location.hostname == 'localhost'` means this runs with esbuild
+ *
+ * https://esbuild.github.io/api/#live-reload
+ */
+if (window.location.hostname == 'localhost') {
+  new EventSource('/esbuild').addEventListener('change', () => location.reload());
+}

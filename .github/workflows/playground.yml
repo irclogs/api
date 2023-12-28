@@ -2,7 +2,7 @@ name: Build Playground
 
 on:
   push:
-    branches: [main]
+    branches: [playground]
   workflow_dispatch:
 
 jobs:
@@ -33,13 +33,13 @@ jobs:
         with:
           run_install: true
 
-      - run: pnpm dist/
-      - run: cp playground/index.html dist/
+      - run: esbuild src/index.ts --bundle --outdir=playground/dist
+      - run: pnpm tsc --emitDeclarationOnly src/index.ts --declaration --target esnext --declarationDir playground/types
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: ./dist
+          path: ./playground
 
       - uses: actions/deploy-pages@v1
         id: deployment
