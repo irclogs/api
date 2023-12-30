@@ -58,7 +58,7 @@ function runCode(editor) {
       reportDiagnostics: true,
     });
     const transpiledCode = result.outputText
-         .replace(/^[:space:]*import.*from.*irclog-api.*/, `import {CouchDB} from "./dist/index.js"`)
+      .replace(/^[:space:]*import.*from.*irclog-api.*/, `import {CouchDB} from "./dist/index.js"`)
 
     createModule(transpiledCode, '#console-output');
 
@@ -66,7 +66,7 @@ function runCode(editor) {
   } catch (error) {
     outputElement.innerText += `Error: ${error.message}\n`;
   }
-  outputElement.scrollTo({top: outputElement.scrollHeight});
+  outputElement.scrollTo({ top: outputElement.scrollHeight });
 }
 
 /**
@@ -102,10 +102,10 @@ function createModule(code, consoleSelector) {
 
 // Load the Monaco Editor
 require.config({
-   paths: {
-      vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs',
-      // 'irclog-api': './dist/index.js',
-   }
+  paths: {
+    vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs',
+    // 'irclog-api': './dist/index.js',
+  }
 });
 
 require(['vs/editor/editor.main'], function () {
