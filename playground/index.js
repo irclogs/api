@@ -5,6 +5,12 @@
  * Configure the typescript language server.
  */
 async function init() {
+  monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+    target: monaco.languages.typescript.ScriptTarget.ESNext,
+    module: monaco.languages.typescript.ModuleKind.ESNext,
+    allowNonTsExtensions: true,
+  });
+
   let exampleCode = localStorage.getItem("example.ts");
   if (!exampleCode) {
     const req = await fetch('./example.ts');
@@ -21,12 +27,6 @@ async function init() {
   editor.focus();
   // make it global for debugging
   window.monacoEditor = editor;
-
-  monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
-    target: monaco.languages.typescript.ScriptTarget.ESNext,
-    module: monaco.languages.typescript.ModuleKind.ESNext,
-    allowNonTsExtensions: true,
-  });
 
   const debouncedSave = debounce(() => save(editor), 1000);
   editor.onKeyDown((ev) => {
