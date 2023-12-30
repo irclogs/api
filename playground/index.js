@@ -11,12 +11,19 @@ async function init() {
     allowNonTsExtensions: true,
   });
 
+  // FIXME: auto-detect all types
+  for (const lib of ["index.d.ts", "couch-api.d.ts", "types.d.ts", "post-query.d.ts"]) {
+    const req = await fetch(`./types/${lib}`);
+    const content = await req.text();
+    monaco.languages.typescript.typescriptDefaults.addExtraLib(content, `file:///node_modules/@types/irclog-api/${lib}`);
+  }
+
   let exampleCode = localStorage.getItem("example.ts");
   if (!exampleCode) {
     const req = await fetch('./example.ts');
     exampleCode = await req.text();
   }
-  const uri = monaco.Uri.parse('http://localhost:3000/example.ts');
+  const uri = monaco.Uri.parse('file:///example.ts');
   const model = monaco.editor.createModel(exampleCode, 'typescript', uri);
 
   const editor = monaco.editor.create(document.getElementById('monaco-editor'), {
