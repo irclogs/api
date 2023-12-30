@@ -35,7 +35,7 @@ async function init() {
   // make it global for debugging
   window.monacoEditor = editor;
 
-  const debouncedSave = debounce(() => save(editor), 1000);
+  const debouncedSave = debounce(() => save(editor), 5000);
   editor.onKeyDown((ev) => {
     if (ev.keyCode === 49 /** KeyCode.KeyS */ && ev.ctrlKey) {
       ev.preventDefault();
