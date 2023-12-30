@@ -12,11 +12,15 @@ async function init() {
   });
 
   // FIXME: auto-detect all types
-  for (const lib of ["index.d.ts", "couch-api.d.ts", "types.d.ts", "post-query.d.ts"]) {
-    const req = await fetch(`./types/${lib}`);
+  const types = ["index.d.ts", "couch-api.d.ts", "types.d.ts", "post-query.d.ts"];
+  (await Promise.all(types.map(async (dts) => {
+    const req = await fetch(`./types/${dts}`);
     const content = await req.text();
-    monaco.languages.typescript.typescriptDefaults.addExtraLib(content, `file:///node_modules/@types/irclog-api/${lib}`);
-  }
+    return [content, `file:///node_modules/@types/irclog-api/${dts}`]
+  })))
+  .forEach(([content, path]) => {
+    monaco.languages.typescript.typescriptDefaults.addExtraLib(content, path);
+  });
 
   let exampleCode = localStorage.getItem("example.ts");
   if (!exampleCode) {
