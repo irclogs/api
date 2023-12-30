@@ -1,42 +1,69 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Playground</title>
-    <link rel="icon" type="image/png" href="./favicon.png">
-    <!--script src="https://unpkg.com/typescript@5.3.3"></script-->
-    <script src="https://www.typescriptlang.org/js/vs.loader.js"></script>
-    <script src="./index.js" defer></script>
-    <style>
-      body {
-        overflow: hidden;
-        margin: 0;
-        height: 100vh;
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Playground</title>
+  <link rel="icon" type="image/png" href="./favicon.png">
+  <!--script src="https://unpkg.com/typescript@5.3.3"></script-->
+  <script src="https://www.typescriptlang.org/js/vs.loader.js"></script>
+  <script src="./index.js" defer></script>
+  <style>
+    body {
+      overflow: hidden;
+      margin: 0;
+    }
+
+    #main {
+      font-size: 12pt;
+      width: 94%;
+      padding: 0pt;
+      margin: 1% 3% 5ex 3%;
+    }
+
+    #leftPane {
+      float: left;
+      height: 90vh;
+      width: 58%;
+      margin: 0;
+      background-color: rgb(255, 221, 227);
+
+      &>#monaco-editor {
+        height: 100%;
       }
-      #monaco-editor {
-        height: 50vh;
-        background-color: rgb(255, 221, 227);
+    }
+
+    #rightPane {
+      float: right;
+      height: 90vh;
+      width: 40%;
+      margin: 0;
+      background-color: #eceff3;
+      /* border: 1px solid #ccc;
+      border-bottom: 0;
+      padding: 10px; */
+      display: flex;
+      flex-direction: column;
+
+      &>pre {
+        overflow: scroll;
+        flex-grow: 1;
       }
-      #lower-pane {
-        background-color: #e3f1ff;
-        border: 1px solid #ccc;
-        border-bottom: 0;
-        padding: 10px;
-        margin: 0;
-        height: 50vh;
-        & > pre {
-           overflow: scroll;
-           height: 85%;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="monaco-editor"></div>
-    <div id="lower-pane">
-      <button id="run-code">Run Code</button>
+    }
+  </style>
+</head>
+
+<body>
+  <div id="main">
+    <div id="leftPane">
+      <div id="monaco-editor"></div>
+    </div>
+    <div id="rightPane">
+      <div><button id="run-code">Run Code</button></div>
       <pre id="console-output"></pre>
     </div>
-  </body>
+  </div>
+</body>
+
 </html>
