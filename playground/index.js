@@ -5,10 +5,13 @@
  * Configure the typescript language server.
  */
 async function init() {
-  const example = await fetch('./example.ts');
-  const exampleContent = await example.text();
+  let exampleCode = localStorage.getItem("example.ts");
+  if (!exampleCode) {
+    const req = await fetch('./example.ts');
+    exampleCode = await req.text();
+  }
   const uri = monaco.Uri.parse('http://localhost:3000/example.ts');
-  const model = monaco.editor.createModel(exampleContent, 'typescript', uri);
+  const model = monaco.editor.createModel(exampleCode, 'typescript', uri);
 
   const editor = monaco.editor.create(document.getElementById('monaco-editor'), {
     model: model,
@@ -23,7 +26,21 @@ async function init() {
     allowNonTsExtensions: true,
   });
 
+  const debouncedSave = debounce(() => save(editor), 1000);
+  editor.onKeyDown((ev) => {
+    if (ev.keyCode === 49 /** KeyCode.KeyS */ && ev.ctrlKey) {
+      ev.preventDefault();
+      save(editor);
+    } else {
+      debouncedSave()
+    }
+  });
+
   document.getElementById('run-code').addEventListener('click', () => runCode(editor));
+}
+
+function save(editor) {
+  localStorage.setItem("example.ts", editor.getModel().getValue());
 }
 
 /**
@@ -102,4 +119,19 @@ require(['vs/editor/editor.main'], function () {
  */
 if (window.location.hostname == 'localhost') {
   new EventSource('/esbuild').addEventListener('change', () => location.reload());
+}
+
+/**
+ * poor-mans debounce
+ *
+ * @param {()=>void} callback
+ * @param {number} delay
+ * @returns ()=>void
+ */
+function debounce(callback, delay) {
+  let timer;
+  return function () {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(callback, delay);
+  }
 }
