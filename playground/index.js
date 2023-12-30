@@ -59,26 +59,16 @@ function save(editor) {
 /**
  * Run button handler
  *
- * @param {MonacoEditor} editor
  */
-function runCode(editor) {
-  const code = editor.getValue();
+async function runCode() {
+
+  const worker = await monaco.languages.typescript.getTypeScriptWorker();
+  const client = await worker();
+  const output = await client.getEmitOutput("file:///example.ts");
+  const js = output.outputFiles[0].text;
+
   const outputElement = document.querySelector('#console-output');
-
-  try {
-    const result = ts.transpileModule(code, {
-      compilerOptions: { target: 'es2022', module: 'es2022', },
-      reportDiagnostics: true,
-    });
-    const transpiledCode = result.outputText
-      .replace(/^[:space:]*import.*from.*irclog-api.*/, `import {CouchDB} from "./dist/index.js"`)
-
-    createModule(transpiledCode, '#console-output');
-
-    outputElement.innerText = 'Code executed successfully';
-  } catch (error) {
-    outputElement.innerText += `Error: ${error.message}\n`;
-  }
+  outputElement.innerText = js;
   outputElement.scrollTo({ top: outputElement.scrollHeight });
 }
 
