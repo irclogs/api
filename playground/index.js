@@ -19,6 +19,8 @@ async function init() {
     automaticLayout: true,
   });
   editor.focus();
+  // make it global for debugging
+  window.monacoEditor = editor;
 
   monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
     target: monaco.languages.typescript.ScriptTarget.ESNext,
