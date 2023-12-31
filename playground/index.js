@@ -91,7 +91,7 @@ function createModule(code, consoleSelector) {
   newModule.textContent = `
     const console = { log: (msg) => {
       const el = document.querySelector('${consoleSelector}');
-      el.innerText += JSON.stringify(msg) + '\\n';
+      el.innerText += JSON.stringify(msg, null, '\\t') + '\\n';
       el.scrollTo({top: el.scrollHeight});
     }};
   `;
