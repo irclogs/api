@@ -61,14 +61,14 @@ function save(editor) {
  *
  */
 async function runCode() {
-
   const worker = await monaco.languages.typescript.getTypeScriptWorker();
   const client = await worker();
   const output = await client.getEmitOutput("file:///example.ts");
   const js = output.outputFiles[0].text;
 
+  createModule(js, '#console-output');
+
   const outputElement = document.querySelector('#console-output');
-  outputElement.innerText = js;
   outputElement.scrollTo({ top: outputElement.scrollHeight });
 }
 
@@ -91,9 +91,9 @@ function createModule(code, consoleSelector) {
   newModule.textContent = `
     const console = { log: (msg) => {
       const el = document.querySelector('${consoleSelector}');
-      el.innerText += msg + '\n';
+      el.innerText += JSON.stringify(msg) + '\\n';
       el.scrollTo({top: el.scrollHeight});
-    }}
+    }};
   `;
   newModule.textContent += code;
   if (oldModule) {
