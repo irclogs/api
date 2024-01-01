@@ -17,10 +17,11 @@
     "prettier:fix": "prettier src/ --write",
     "play": "esbuild src/index.ts --bundle --outdir=playground/dist --watch --servedir=playground --format=esm",
     "playground:dist": "esbuild src/index.ts --bundle --outdir=playground/dist --format=esm",
-    "playground:types": "tsc --emitDeclarationOnly src/index.ts --declaration --target esnext --declarationDir playground/types",
+    "playground:types": "dts-bundle --name @irclogs/api --baseDir ./dist/ --main dist/index.d.ts --out $PWD/playground/dist/index.d.ts",
     "test": "echo Warning: no test specified for now!"
   },
   "devDependencies": {
+    "dts-bundle": "^0.7.3",
     "esbuild": "^0.19.10",
     "prettier": "^3.1.1",
     "typescript": "^5.3.3"
