@@ -17,7 +17,7 @@
     "prettier:fix": "prettier src/ --write",
     "play": "esbuild src/index.ts --bundle --outdir=playground/dist --watch --servedir=playground --format=esm",
     "playground:dist": "esbuild src/index.ts --bundle --outdir=playground/dist --format=esm",
-    "playground:types": "dts-bundle --name @irclogs/api --baseDir ./dist/ --main dist/index.d.ts --out $PWD/playground/dist/index.d.ts",
+    "playground:types": "$_ dist && dts-bundle --name @irclogs/api --baseDir ./dist/ --main dist/index.d.ts --out $PWD/playground/dist/index.d.ts",
     "test": "echo Warning: no test specified for now!"
   },
   "devDependencies": {
