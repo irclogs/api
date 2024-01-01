@@ -1,4 +1,4 @@
-# `irclog-api`
+# `@irclogs/api`
 
 Typescript API to access the IrcLog CouchDB database. Mostly typed wrappers over the http api of CouchDB.
 
@@ -14,13 +14,18 @@ yarn add @irclogs/api
 pnpm add @irclogs/api
 ```
 
-## Quick start for developers
+## API Playground
 
-TBD
+See https://irclogs.github.io/api/ to interactively play with the api in your browser.
+
+To use the playground locally run:
 ```
 pnpm install
+pnpm playground:types
 pnpm play
 ```
+and open http://localhost:8000
+
 
 ## References
 
