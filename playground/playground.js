@@ -50,6 +50,7 @@ async function init() {
   });
 
   document.getElementById('run-code').addEventListener('click', () => runCode(editor));
+  document.getElementById('clear-log').addEventListener('click', () => document.querySelector('#console-output').innerText = '');
 }
 
 function save(editor) {
