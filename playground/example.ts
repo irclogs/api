@@ -1,4 +1,4 @@
-import {CouchDB} from "irclog-api";
+import {CouchDB} from "@irclogs/api";
 
 type T = "a" | "B";
 let a: T = "a";

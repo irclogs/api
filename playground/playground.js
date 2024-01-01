@@ -11,18 +11,12 @@ async function init() {
     allowNonTsExtensions: true,
   });
 
-  // FIXME: auto-detect all types
-  const types = ["index.d.ts", "couch-api.d.ts", "types.d.ts", "post-query.d.ts"];
-  (await Promise.all(types.map(async (dts) => {
-    const req = await fetch(`./types/${dts}`);
-    const content = await req.text();
-    return [content, `file:///node_modules/@types/irclog-api/${dts}`]
-  })))
-  .forEach(([content, path]) => {
-    monaco.languages.typescript.typescriptDefaults.addExtraLib(content, path);
-  });
+  const req = await fetch('./dist/index.d.ts');
+  const content = await req.text();
+  const path = 'file:///node_modules/@types/@irclogs/api/index.d.ts';
+  monaco.languages.typescript.typescriptDefaults.addExtraLib(content, path);
 
-  let exampleCode = localStorage.getItem("example.ts");
+  let exampleCode = localStorage.getItem("file:///example.ts");
   if (!exampleCode) {
     const req = await fetch('./example.ts');
     exampleCode = await req.text();
@@ -54,7 +48,7 @@ async function init() {
 }
 
 function save(editor) {
-  localStorage.setItem("example.ts", editor.getModel().getValue());
+  localStorage.setItem("file:///example.ts", editor.getModel().getValue());
 }
 
 /**
@@ -62,6 +56,7 @@ function save(editor) {
  *
  */
 async function runCode() {
+  // I have no idea how this works
   const worker = await monaco.languages.typescript.getTypeScriptWorker();
   const client = await worker();
   const output = await client.getEmitOutput("file:///example.ts");
@@ -108,7 +103,6 @@ function createModule(code, consoleSelector) {
 require.config({
   paths: {
     vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs',
-    // 'irclog-api': './dist/index.js',
   }
 });
 
