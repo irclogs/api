@@ -2,7 +2,7 @@ name: Build Playground
 
 on:
   push:
-    branches: [playground]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
