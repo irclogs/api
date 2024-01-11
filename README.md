@@ -1,4 +1,4 @@
-# `irclog-api`
+# `@irclogs/api`
 
 Typescript API to access the IrcLog CouchDB database. Mostly typed wrappers over the http api of CouchDB.
 
@@ -6,16 +6,26 @@ Typescript API to access the IrcLog CouchDB database. Mostly typed wrappers over
 ## Quick start for users
 
 ```
-TBD
+echo "@irclogs:registry=https://npm.pkg.github.com" >> .npmrc
+npm install @irclogs/api
+# or
+yarn add @irclogs/api
+# or
+pnpm add @irclogs/api
 ```
 
-## Quick start for developers
+## API Playground
 
-TBD
+See https://irclogs.github.io/api/ to interactively play with the api in your browser.
+
+To use the playground locally run:
 ```
 pnpm install
-pnpm dev
+pnpm playground:types
+pnpm play
 ```
+and open http://localhost:8000
+
 
 ## References
 
@@ -27,6 +37,5 @@ pnpm dev
 
 - naming: class name?
 - documentation
-- playground publish to gh-pages (https://www.typescriptlang.org/dev/sandbox/)
 - package publish check auto-versioning schema
 - validation on responses and typing (use zod)

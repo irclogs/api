@@ -11,15 +11,20 @@
     "/dist"
   ],
   "scripts": {
-    "dist": "tsc",
+    "dist": "rm -rf dist/ && tsc",
     "compile": "tsc --noEmit --pretty",
     "prettier": "prettier src/",
     "prettier:fix": "prettier src/ --write",
+    "play": "esbuild src/index.ts --bundle --outdir=playground/dist --watch --servedir=playground --format=esm",
+    "playground:dist": "esbuild src/index.ts --bundle --outdir=playground/dist --format=esm",
+    "playground:types": "$_ dist && dts-bundle --name @irclogs/api --baseDir ./dist/ --main dist/index.d.ts --out $PWD/playground/dist/index.d.ts",
     "test": "echo Warning: no test specified for now!"
   },
   "devDependencies": {
-    "prettier": "^3.1.0",
-    "typescript": "^5.3.2"
+    "dts-bundle": "^0.7.3",
+    "esbuild": "^0.19.10",
+    "prettier": "^3.1.1",
+    "typescript": "^5.3.3"
   },
   "prettier": {
     "printWidth": 120,
